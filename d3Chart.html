@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="bower_components/nvd3/src/nv.d3.css" rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.2/d3.min.js" charset="utf-8"></script>
+    <script src="bower_components/nvsd3/nv.d3.js"></script>
+    <script src="stream_layers.js"></script>
+    <script src="bower_components/d3/nv.d3.min.js"></script>
+    <style>
+        text {
+            font: 12px sans-serif;
+        }
+        svg {
+            display: block;
+        }
+        html, body, #chart, svg {
+            margin: 0px;
+            padding: 0px;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+  </head>
+
+  <body>
+  <script>
+  //data
+  var sales = [
+  { product: 'Hoodie',  count: 7 },
+  { product: 'Jacket',  count: 6 },
+  { product: 'Snuggie', count: 9 },
+];
+
+//connect data to non-existing elements
+var svg = d3.select('svg');
+svg.size();
+// 1 -- one <svg> element exists
+
+var rects = svg.selectAll('rect')
+  .data(sales);
+
+rects.size();
+
+//create element-less datapoints:
+var newRects = rects.enter();
+
+// recall that scales are functions that map from
+// data space to screen space
+var maxCount = d3.max(sales, function(d, i) {
+  return d.count;
+});
+var x = d3.scale.linear()
+  .range([0, 300])
+  .domain([0, maxCount]);
+var y = d3.scale.ordinal()
+  .rangeRoundBands([0, 75])
+  .domain(sales.map(function(d, i) {
+    return d.product;
+  }));
+
+//add new elements 
+newRects.append('rect')
+  .attr('x', x(0))
+  .attr('y', function(d, i) {
+    return y(d.product);
+  })
+  .attr('height', y.rangeBand())
+  .attr('width', function(d, i) {
+    return x(d.count);
+  });
+
+  </script>
+  <svg width="300" height="100">
+  <rect x="0" y="0"  height="25" width="233.33" />
+  <rect x="0" y="25" height="25" width="200" />
+  <rect x="0" y="50" height="25" width="300" />
+<svg>
+  
+
+  </body>
+</html>
